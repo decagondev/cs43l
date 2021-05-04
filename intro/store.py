@@ -1,8 +1,12 @@
 from category import Category
+from product import Product
+from ball import Ball
+from footware import Footware
 class Store:
     def __init__(self, name, categories):
         self.name = name
         self.categories = categories # category
+
 
     def __str__(self):
         output = f"{self.name}\n"
@@ -17,7 +21,7 @@ class Store:
         return f"Store(\"{self.name}\", {self.categories})"
 
 
-store = Store("My Shop", [Category("Running"), Category("Baseball"), Category("Basketball")])
+store = Store("My Shop", [Category("Running", [Footware("some Shoe Product", 23, "Red", 12), Product("some Boot Product", 34), Product("some Sock Product", 90)]), Category("Baseball"), Category("Basketball", [Ball("Wilson Super Charge", 900, False)])])
 selection = 0
 
 while selection != len(store.categories) + 1:
