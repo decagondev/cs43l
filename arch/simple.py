@@ -6,6 +6,9 @@ STORE = 4
 PRINT_REG = 5
 PUSH = 6
 POP = 7
+CALL = 8
+RET = 9
+ADD = 10
 LDI = 0b10000010
 HLT = 0b00000001
 
@@ -42,7 +45,22 @@ ram[16] = POP
 ram[17] = 0
 ram[18] = PRINT_REG
 ram[19] = 0
-ram[20] = HALT
+ram[20] = STORE
+ram[21] = 1
+ram[22] = 2
+ram[23] = STORE
+ram[24] = 3
+ram[25] = 31
+ram[26] = CALL
+ram[27] = 3
+ram[28] = PRINT_REG
+ram[29] = 3
+ram[30] = HALT
+ram[31] = ADD
+ram[32] = 3
+ram[33] = 0
+ram[34] = RET
+
 
 def load(filename):
     with open(filename) as filedata:
@@ -70,6 +88,9 @@ running = True
 
 while running:
     inst = ram[pc]
+    opera = ram[pc + 1]
+    operb = ram[pc + 2]
+    
 
     if inst == HALT:
         print("Halting CPU")
@@ -110,3 +131,24 @@ while running:
         reg[reg_index] = value
 
         pc += 2
+
+    elif inst == ADD:
+        alu("ADD", opera, operb)
+        pc += 3
+
+    elif inst == CALL:
+        # store the return addr
+        return_addr = pc + 2
+
+        # dec the SP
+        reg[sp] -= 1
+        ram[reg[sp]] = return_addr
+
+
+        # set pc to addr that is called
+        reg_index = ram[pc + 1]
+        pc = reg[reg_index]
+
+    elif inst == RET:
+        pc = ram[reg[sp]]
+        reg[sp] += 1
